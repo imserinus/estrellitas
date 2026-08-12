@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estrellitas · Ranking mensual</title>
+<style>
+  :root{
+    --void:#05060a; --void-2:#0a0f0a;
+    --nebula-violet:#10321a; --nebula-magenta:#163d1e;
+    --star-white:#f2fff0; --star-dim:#8fb08f;
+    --gold:#aef22c; --cyan:#6dffb0; --rose:#39ff6e;
+    --font-display:'Franklin Gothic Medium','Franklin Gothic','ITC Franklin Gothic','Arial Narrow',Arial,sans-serif;
+    --font-body:'Franklin Gothic Book','Franklin Gothic Medium','Arial Narrow',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{
+    min-height:100%;
+    background:radial-gradient(ellipse at 50% 12%, var(--nebula-violet) 0%, var(--void-2) 45%, var(--void) 100%) fixed;
+    font-family:var(--font-body); color:var(--star-white);
+    -webkit-font-smoothing:antialiased;
+  }
+  #starfield{position:fixed;inset:0;z-index:0;}
+  #glow{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:
+      radial-gradient(circle at 15% 80%, rgba(22,61,30,.45), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(174,242,44,.10), transparent 35%);
+  }
+  main{position:relative;z-index:2;width:min(980px,94vw);margin:0 auto;padding:clamp(28px,6vh,64px) 0 80px;}
+
+  header{text-align:center;margin-bottom:clamp(24px,4vh,44px);}
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(30px,6vw,62px); letter-spacing:.05em; text-transform:uppercase;
+    background:linear-gradient(180deg,var(--star-white),var(--gold) 130%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 40px rgba(174,242,44,.24);
+  }
+  header p{margin-top:.5em;color:var(--star-dim);letter-spacing:.06em;font-size:clamp(13px,2vw,18px);}
+
+  .stats{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:26px 0 30px;}
+  .stat{
+    flex:1 1 130px;min-width:130px;max-width:220px;
+    background:rgba(174,242,44,.05); border:1px solid rgba(174,242,44,.16);
+    border-radius:14px; padding:14px 10px; text-align:center;
+    backdrop-filter:blur(6px);
+  }
+  .stat b{display:block;font-family:var(--font-display);font-size:clamp(22px,4vw,32px);color:var(--gold);line-height:1.1;}
+  .stat span{display:block;margin-top:4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--star-dim);}
+
+  .podio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;align-items:end;}
+  .podio .p{
+    border-radius:16px;padding:18px 12px;text-align:center;
+    background:linear-gradient(180deg,rgba(174,242,44,.10),rgba(5,6,10,.5));
+    border:1px solid rgba(174,242,44,.2);
+  }
+  .podio .p1{border-color:var(--gold);box-shadow:0 0 34px rgba(174,242,44,.22);padding-top:26px;padding-bottom:26px;}
+  .podio .p2{border-color:rgba(109,255,176,.35);}
+  .podio .p3{border-color:rgba(143,176,143,.3);}
+  .podio .medalla{font-size:26px;line-height:1;}
+  .podio .nom{margin-top:8px;font-family:var(--font-display);font-size:clamp(13px,2.4vw,19px);word-break:break-word;}
+  .podio .tot{margin-top:6px;color:var(--gold);font-size:clamp(18px,3.4vw,28px);font-family:var(--font-display);}
+  .podio .sub{margin-top:2px;font-size:11px;color:var(--star-dim);letter-spacing:.1em;text-transform:uppercase;}
+
+  .meses{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 26px;}
+  .mes{
+    padding:8px 16px;border-radius:999px;cursor:pointer;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);
+    color:var(--star-dim);font-family:var(--font-body);font-size:14px;letter-spacing:.04em;
+    transition:all .15s;
+  }
+  .mes:hover{border-color:rgba(174,242,44,.4);color:var(--star-white);}
+  .mes.activo{
+    background:rgba(174,242,44,.14);border-color:var(--gold);color:var(--star-white);
+    box-shadow:0 0 18px rgba(174,242,44,.18);
+  }
+
+  .barra-busqueda{position:relative;margin-bottom:14px;}
+  input[type=search]{
+    width:100%;padding:12px 16px;border-radius:12px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(174,242,44,.18);
+    color:var(--star-white);font-family:var(--font-body);font-size:15px;
+  }
+  input[type=search]:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(174,242,44,.12);}
+  input[type=search]::placeholder{color:var(--star-dim);}
+
+  .tabla{border:1px solid rgba(174,242,44,.14);border-radius:16px;overflow:hidden;background:rgba(5,6,10,.42);}
+  .fila{
+    display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;
+    padding:12px 16px;border-top:1px solid rgba(255,255,255,.05);
+    cursor:pointer;position:relative;transition:background .15s;
+  }
+  .fila:first-child{border-top:none;}
+  .fila:hover{background:rgba(174,242,44,.06);}
+  .fila .puesto{font-family:var(--font-display);font-size:19px;color:var(--star-dim);text-align:center;}
+  .fila.top .puesto{color:var(--gold);}
+  .fila .nom{font-size:16px;word-break:break-word;}
+  .fila .meta{font-size:11.5px;color:var(--star-dim);margin-top:3px;letter-spacing:.04em;}
+  .fila .tot{font-family:var(--font-display);font-size:21px;color:var(--gold);white-space:nowrap;}
+  .progreso{
+    position:absolute;left:0;bottom:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--cyan));opacity:.5;
+  }
+  .detalle{display:none;padding:2px 16px 16px 68px;background:rgba(0,0,0,.25);}
+  .detalle.abierto{display:block;}
+  .chip{
+    display:inline-block;margin:4px 6px 0 0;padding:4px 10px;border-radius:999px;
+    background:rgba(174,242,44,.09);border:1px solid rgba(174,242,44,.18);font-size:12.5px;
+  }
+  .chip b{color:var(--gold);}
+  .chip.premio{background:rgba(109,255,176,.08);border-color:rgba(109,255,176,.22);}
+
+  h2{
+    font-family:var(--font-display);font-size:14px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--star-dim);margin:34px 0 12px;
+  }
+  .lives{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;}
+  .live{
+    padding:12px 14px;border-radius:12px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  }
+  .live .t{font-size:13.5px;line-height:1.35;}
+  .live .d{margin-top:6px;font-size:11.5px;color:var(--star-dim);letter-spacing:.05em;}
+  footer{margin-top:38px;text-align:center;font-size:11.5px;color:var(--star-dim);letter-spacing:.06em;}
+  .vacio{padding:30px;text-align:center;color:var(--star-dim);}
+
+  @media (max-width:560px){
+    .podio{grid-template-columns:1fr;align-items:stretch;}
+    .fila{grid-template-columns:40px 1fr auto;padding:11px 12px;gap:8px;}
+    .detalle{padding-left:52px;}
+  }
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div id="glow"></div>
+
+<main>
+  <header>
+    <h1 id="titulo">Estrellitas · Ranking mensual</h1>
+    <p id="sub">La Galaxia de Verona</p>
+  </header>
+
+  <div class="meses" id="meses"></div>
+  <div class="stats" id="stats"></div>
+  <div class="podio" id="podio"></div>
+
+  <div class="barra-busqueda">
+    <input type="search" id="buscar" placeholder="Buscar a alguien..." autocomplete="off">
+  </div>
+  <div class="tabla" id="tabla"></div>
+
+  <h2>Lives contados</h2>
+  <div class="lives" id="lives"></div>
+
+  <footer id="pie"></footer>
+</main>
+
+<script type="application/json" id="datos">{"generado":"2026-08-12T22:53:20.623Z","mesActivo":"2026-08","meses":[{"clave":"2026-08","etiqueta":"Agosto 2026","lives":[{"id":"1533180066018754740","titulo":"REPARTO DE ESTRELLITAS | LIVE 01/08","fecha":"2026-08-01","entradas":37,"total":110},{"id":"1533900853302263869","titulo":"REPARTO DE ESTRELLITAS AGOSTO | LIVE 03/08","fecha":"2026-08-03","entradas":5,"total":18},{"id":"1534296772493578371","titulo":"ESTRELLITAS AGOSTO | LIVE 04/08","fecha":"2026-08-04","entradas":5,"total":18},{"id":"1534661304030334976","titulo":"ESTRELLITAS AGOSTO | LIVE 05/08","fecha":"2026-08-05","entradas":5,"total":18},{"id":"1535022321763352727","titulo":"ESTRELLITAS AGOSTO | LIVE 06/08","fecha":"2026-08-06","entradas":5,"total":18},{"id":"1535386191007060059","titulo":"ESTRELLITAS AGOSTO | LIVE 07/08","fecha":"2026-08-07","entradas":5,"total":18},{"id":"1536105653091958877","titulo":"ESTRELLITAS AGOSTO | LIVE 09/08","fecha":"2026-08-09","entradas":5,"total":18},{"id":"1536136048323854456","titulo":"Semana 1 | Agosto - Galería de Regalos","fecha":"2026-08-09","entradas":13,"total":99},{"id":"1536480544701943818","titulo":"ESTRELLITAS AGOSTO | LIVE 10/08","fecha":"2026-08-10","entradas":6,"total":19},{"id":"1536784538586452011","titulo":"ESTRELLITAS AGOSTO | LIVE 11/08","fecha":"2026-08-11","entradas":12,"total":25},{"id":"1537205722079825920","titulo":"ESTRELLITAS AGOSTO | LIVE 12/08","fecha":"2026-08-12","entradas":9,"total":50}],"secciones":{"Carrera de canicas":90,"Top de taps":80,"Galáctico":50,"Meteoritos":50,"Sombrero y bigote":33,"Boosteo del servidor de discord con nitro":30,"Rosquilla":27,"Galaxia":20,"Corazón Coreano":7,"Rosa":6,"Rosa grande":6,"Comentarios video TikTok":5,"Juegos":4,"Chomp":3},"totalEstrellitas":411,"ranking":[{"nombre":"Sabiii🐙✨","clave":"sabiii","total":93,"apariciones":17,"lives":7,"porSeccion":{"Boosteo del servidor de discord con nitro":30,"Carrera de canicas":27,"Galáctico":20,"Rosquilla":9,"Meteoritos":5,"Top de taps":2},"premios":[],"variantes":["Sabiii🐙✨"],"puesto":1},{"nombre":"XimeCB","clave":"ximecb","total":69,"apariciones":17,"lives":8,"porSeccion":{"Meteoritos":25,"Sombrero y bigote":11,"Galáctico":10,"Rosquilla":8,"Top de taps":6,"Rosa grande":6,"Rosa":2,"Comentarios video TikTok":1},"premios":[],"variantes":["XimeCB"],"puesto":2},{"nombre":"ZyralX","clave":"zyralx","total":50,"apariciones":12,"lives":10,"porSeccion":{"Top de taps":36,"Sombrero y bigote":10,"Carrera de canicas":3,"Comentarios video TikTok":1},"premios":[],"variantes":["ZyralX"],"puesto":3},{"nombre":"Mandarina 🍊","clave":"mandarina","total":34,"apariciones":6,"lives":4,"porSeccion":{"Sombrero y bigote":12,"Rosquilla":10,"Meteoritos":5,"Top de taps":4,"Rosa":3},"premios":[],"variantes":["Mandarina 🍊"],"puesto":4},{"nombre":"stefany","clave":"stefany","total":29,"apariciones":6,"lives":1,"porSeccion":{"Carrera de canicas":29},"premios":[],"variantes":["stefany"],"puesto":5},{"nombre":"SPR1NTX","clave":"spr1ntx","total":20,"apariciones":1,"lives":1,"porSeccion":{"Galaxia":20},"premios":[],"variantes":["SPR1NTX"],"puesto":6},{"nombre":"MarCePineda","clave":"marcepineda","total":16,"apariciones":6,"lives":3,"porSeccion":{"Carrera de canicas":11,"Corazón Coreano":4,"Comentarios video TikTok":1},"premios":[],"variantes":["MarCePineda"],"puesto":7},{"nombre":"Marlon","clave":"marlon","total":11,"apariciones":3,"lives":3,"porSeccion":{"Galáctico":10,"Rosa":1},"premios":[],"variantes":["Marlon"],"puesto":8},{"nombre":"esmeralda","clave":"esmeralda","total":11,"apariciones":3,"lives":1,"porSeccion":{"Carrera de canicas":11},"premios":[],"variantes":["esmeralda"],"puesto":8},{"nombre":"Mittens","clave":"mittens","total":10,"apariciones":8,"lives":5,"porSeccion":{"Top de taps":6,"Chomp":2,"Carrera de canicas":2},"premios":[{"seccion":"Sorteo tarjeta 10 €","live":"ESTRELLITAS AGOSTO | LIVE 12/08"}],"variantes":["Mittens"],"puesto":10},{"nombre":"Mily_quituli13","clave":"mily_quituli13","total":9,"apariciones":5,"lives":3,"porSeccion":{"Carrera de canicas":5,"Corazón Coreano":3,"Top de taps":1},"premios":[],"variantes":["Mily_quituli13"],"puesto":11},{"nombre":"AgusDaSa","clave":"agusdasa","total":7,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":7},"premios":[],"variantes":["AgusDaSa"],"puesto":12},{"nombre":"Garcikha","clave":"garcikha","total":7,"apariciones":3,"lives":2,"porSeccion":{"Meteoritos":5,"Carrera de canicas":2},"premios":[],"variantes":["Garcikha"],"puesto":12},{"nombre":"lali","clave":"lali","total":6,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["lali"],"puesto":14},{"nombre":"•Luna_Natzuki•","clave":"luna_natzuki","total":6,"apariciones":2,"lives":1,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["•Luna_Natzuki•"],"puesto":14},{"nombre":"🐯 Samuel de pirata 🐯","clave":"samueldepirata","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["🐯 Samuel de pirata 🐯"],"puesto":16},{"nombre":"Dine3411","clave":"dine3411","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["Dine3411"],"puesto":16},{"nombre":"joni1820","clave":"joni1820","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["joni1820"],"puesto":16},{"nombre":"rachel","clave":"rachel","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["rachel"],"puesto":16},{"nombre":"Kimmalu","clave":"kimmalu","total":2,"apariciones":2,"lives":2,"porSeccion":{"Chomp":1,"Comentarios video TikTok":1},"premios":[],"variantes":["Kimmalu"],"puesto":20},{"nombre":"Gissel","clave":"gissel","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["Gissel"],"puesto":20},{"nombre":"monikamonik","clave":"monikamonik","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["monikamonik"],"puesto":20},{"nombre":"PlatAB","clave":"platab","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["PlatAB"],"puesto":20},{"nombre":"[SPAIN]MikeAlfaEco","clave":"spainmikealfaeco","total":1,"apariciones":1,"lives":1,"porSeccion":{"Comentarios video TikTok":1},"premios":[],"variantes":["[SPAIN]MikeAlfaEco"],"puesto":24},{"nombre":"mafe","clave":"mafe","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["mafe"],"puesto":24},{"nombre":"MAO","clave":"mao","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["MAO"],"puesto":24},{"nombre":"Rosi Limón","clave":"rosilimón","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["Rosi Limón"],"puesto":24},{"nombre":"sevigame","clave":"sevigame","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["sevigame"],"puesto":24}]}]}</script>
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const SUB = document.getElementById('sub').textContent;
+
+  let M = D.meses.find(m => m.clave === D.mesActivo) || D.meses[0] || null;
+  let max = 1;
+
+  document.getElementById('meses').innerHTML = D.meses
+    .map(m => '<button class="mes'+(m.clave===D.mesActivo?' activo':'')+'" data-mes="'+m.clave+'">'
+      + esc(m.etiqueta)+'</button>').join('');
+
+  document.getElementById('meses').addEventListener('click', e => {
+    const b = e.target.closest('.mes');
+    if (!b) return;
+    M = D.meses.find(m => m.clave === b.dataset.mes);
+    document.querySelectorAll('.mes').forEach(x => x.classList.toggle('activo', x === b));
+    document.getElementById('buscar').value = '';
+    mostrarMes();
+  });
+
+  function mostrarMes(){
+    if (!M) return;
+    max = M.ranking.length ? M.ranking[0].total : 1;
+    document.getElementById('sub').textContent = SUB ? SUB + ' · ' + M.etiqueta : M.etiqueta;
+
+    document.getElementById('stats').innerHTML = [
+      ['Lives', M.lives.length],
+      ['Participantes', M.ranking.length],
+      ['Estrellitas', M.totalEstrellitas],
+      ['Categorias', Object.keys(M.secciones).length]
+    ].map(([k,v]) => '<div class="stat"><b>'+v+'</b><span>'+k+'</span></div>').join('');
+
+    const medallas = ['🥇','🥈','🥉'];
+    const orden = [1,0,2]; // 2º - 1º - 3º
+    document.getElementById('podio').innerHTML = orden
+      .filter(i => M.ranking[i])
+      .map(i => {
+        const p = M.ranking[i];
+        return '<div class="p p'+(i+1)+'">'
+          + '<div class="medalla">'+medallas[i]+'</div>'
+          + '<div class="nom">'+esc(p.nombre)+'</div>'
+          + '<div class="tot">'+p.total+'</div>'
+          + '<div class="sub">'+p.lives+' live'+(p.lives===1?'':'s')+'</div>'
+          + '</div>';
+      }).join('');
+
+    pintar('');
+
+    document.getElementById('lives').innerHTML = M.lives.slice().reverse().map(l => {
+      // "2026-08-01" a fecha local; new Date(cadena) la leeria como UTC y restaria un dia.
+      const [aa, mm, dd] = l.fecha.split('-').map(Number);
+      const f = new Date(aa, mm - 1, dd);
+      return '<div class="live"><div class="t">'+esc(l.titulo)+'</div>'
+        + '<div class="d">'+f.toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})
+        + ' · '+l.entradas+' entradas · '+l.total+' ⭐</div></div>';
+    }).join('') || '<div class="vacio">No hay lives este mes.</div>';
+  }
+
+  const tabla = document.getElementById('tabla');
+
+  function pintar(filtro){
+    if (!M) return;
+    const q = (filtro||'').trim().toLowerCase();
+    const lista = q
+      ? M.ranking.filter(p => p.nombre.toLowerCase().includes(q) || p.clave.includes(q))
+      : M.ranking;
+
+    if (!lista.length){
+      tabla.innerHTML = '<div class="vacio">Nadie coincide con esa busqueda.</div>';
+      return;
+    }
+
+    tabla.innerHTML = lista.map((p, i) => {
+      const ancho = max > 0 ? (p.total / max * 100) : 0;
+      const secs = Object.entries(p.porSeccion)
+        .map(([s,v]) => '<span class="chip">'+esc(s)+' <b>'+v+'</b></span>').join('');
+      const prem = p.premios
+        .map(x => '<span class="chip premio">'+esc(x.seccion)+'</span>').join('');
+      return ''
+        + '<div class="fila'+(p.puesto<=3?' top':'')+'" data-i="'+i+'">'
+        +   '<div class="puesto">'+p.puesto+'</div>'
+        +   '<div><div class="nom">'+esc(p.nombre)+'</div>'
+        +     '<div class="meta">'+p.lives+' live'+(p.lives===1?'':'s')+' · '+p.apariciones+' recompensa'+(p.apariciones===1?'':'s')+'</div></div>'
+        +   '<div class="tot">'+p.total+'</div>'
+        +   '<div class="progreso" style="width:'+ancho+'%"></div>'
+        + '</div>'
+        + '<div class="detalle" data-d="'+i+'">'
+        +   (secs || '<span class="chip">Sin estrellitas todavia</span>') + prem
+        + '</div>';
+    }).join('');
+  }
+
+  tabla.addEventListener('click', e => {
+    const fila = e.target.closest('.fila');
+    if (!fila) return;
+    const det = tabla.querySelector('.detalle[data-d="'+fila.dataset.i+'"]');
+    if (det) det.classList.toggle('abierto');
+  });
+
+  document.getElementById('buscar').addEventListener('input', e => pintar(e.target.value));
+  mostrarMes();
+
+  document.getElementById('pie').textContent =
+    'Actualizado el ' + new Date(D.generado).toLocaleString('es-ES');
+
+  // Starfield
+  const c = document.getElementById('starfield'), x = c.getContext('2d');
+  let estrellas = [];
+  function medir(){
+    c.width = innerWidth; c.height = innerHeight;
+    estrellas = Array.from({length: Math.round(innerWidth*innerHeight/9000)}, () => ({
+      x: Math.random()*c.width, y: Math.random()*c.height,
+      r: Math.random()*1.3 + .2, a: Math.random(), v: Math.random()*.015 + .004
+    }));
+  }
+  function tick(){
+    x.clearRect(0,0,c.width,c.height);
+    for (const s of estrellas){
+      s.a += s.v;
+      const o = .28 + Math.abs(Math.sin(s.a))*.6;
+      x.beginPath(); x.arc(s.x, s.y, s.r, 0, 6.284);
+      x.fillStyle = 'rgba(242,255,240,'+o+')'; x.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  addEventListener('resize', medir); medir(); tick();
+})();
+</script>
+</body>
+</html>
