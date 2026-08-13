@@ -63,6 +63,72 @@
   .podio .tot{margin-top:6px;color:var(--gold);font-size:clamp(18px,3.4vw,28px);font-family:var(--font-display);}
   .podio .sub{margin-top:2px;font-size:11px;color:var(--star-dim);letter-spacing:.1em;text-transform:uppercase;}
 
+  /* Pestañas: ranking / como se ganan */
+  .nav{
+    display:flex;gap:4px;justify-content:center;margin:0 0 30px;
+    border-bottom:1px solid rgba(174,242,44,.14);
+  }
+  .tab{
+    background:none;border:none;cursor:pointer;
+    padding:10px 22px;margin-bottom:-1px;
+    border-bottom:2px solid transparent;
+    color:var(--star-dim);font-family:var(--font-display);
+    font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+    transition:color .15s,border-color .15s;
+  }
+  .tab:hover{color:var(--star-white);}
+  .tab.activo{color:var(--gold);border-bottom-color:var(--gold);}
+  .tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px;}
+  [hidden]{display:none !important;}
+
+  /* Vista "como se ganan" */
+  .intro{
+    text-align:center;color:var(--star-dim);font-size:15px;line-height:1.6;
+    max-width:60ch;margin:0 auto 30px;
+  }
+  .bloques{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .bloque{
+    background:rgba(5,6,10,.42);border:1px solid rgba(174,242,44,.14);
+    border-radius:16px;padding:18px 20px;
+  }
+  .bloque h3{
+    font-family:var(--font-display);font-size:13px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:4px;
+  }
+  .bloque .nota{font-size:12.5px;color:var(--star-dim);margin-bottom:12px;line-height:1.45;}
+  .puntos{display:flex;flex-direction:column;gap:1px;}
+  .punto{
+    display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+    padding:9px 0;border-top:1px solid rgba(255,255,255,.06);
+  }
+  .punto:first-child{border-top:none;}
+  .punto .q{font-size:15px;}
+  .punto .q small{display:block;color:var(--star-dim);font-size:12px;margin-top:2px;}
+  .punto .v{
+    font-family:var(--font-display);font-size:18px;color:var(--gold);white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+  .escalera{display:flex;flex-wrap:wrap;gap:8px;}
+  .peldano{
+    flex:1 1 84px;text-align:center;padding:10px 6px;border-radius:12px;
+    background:rgba(174,242,44,.06);border:1px solid rgba(174,242,44,.16);
+  }
+  .peldano .p{font-size:11px;letter-spacing:.1em;color:var(--star-dim);text-transform:uppercase;}
+  .peldano .e{
+    font-family:var(--font-display);font-size:20px;color:var(--gold);margin-top:2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .peldano.oro{border-color:var(--gold);background:rgba(174,242,44,.13);}
+  .premios{display:flex;flex-direction:column;gap:12px;}
+  .premio{
+    padding:14px 16px;border-radius:14px;
+    background:linear-gradient(180deg,rgba(174,242,44,.09),rgba(5,6,10,.4));
+    border:1px solid rgba(174,242,44,.2);
+  }
+  .premio b{display:block;font-family:var(--font-display);font-size:15px;margin-bottom:4px;}
+  .premio span{font-size:14px;color:var(--star-dim);line-height:1.55;}
+  .ancho{grid-column:1/-1;}
+
   .meses{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 26px;}
   .mes{
     padding:8px 16px;border-radius:999px;cursor:pointer;
@@ -142,22 +208,34 @@
     <p id="sub">La Galaxia de Verona</p>
   </header>
 
-  <div class="meses" id="meses"></div>
-  <div class="stats" id="stats"></div>
-  <div class="podio" id="podio"></div>
+  <nav class="nav">
+    <button class="tab activo" data-vista="ranking">Ranking</button>
+    <button class="tab" data-vista="puntos">Cómo se ganan</button>
+  </nav>
 
-  <div class="barra-busqueda">
-    <input type="search" id="buscar" placeholder="Buscar a alguien..." autocomplete="off">
-  </div>
-  <div class="tabla" id="tabla"></div>
+  <section id="vista-ranking">
+    <div class="meses" id="meses"></div>
+    <div class="stats" id="stats"></div>
+    <div class="podio" id="podio"></div>
 
-  <h2>Lives contados</h2>
-  <div class="lives" id="lives"></div>
+    <div class="barra-busqueda">
+      <input type="search" id="buscar" placeholder="Buscar a alguien..." autocomplete="off">
+    </div>
+    <div class="tabla" id="tabla"></div>
+
+    <h2>Lives contados</h2>
+    <div class="lives" id="lives"></div>
+  </section>
+
+  <section id="vista-puntos" hidden>
+    <p class="intro">Todo lo que suma estrellitas en los lives. Cada reparto se publica en Discord y de ahí sale este ranking.</p>
+    <div class="bloques"><div class="bloque"><h3>Suscripciones</h3><p class="nota">Lo que más suma del mes.</p><div class="puntos"><div class="punto"><div class="q">Suscripción de TikTok</div><div class="v">50 ⭐</div></div><div class="punto"><div class="q">Regalar una suscripción</div><div class="v">50 ⭐</div></div><div class="punto"><div class="q">Mejora del servidor de Discord</div><div class="v">10 ⭐</div></div></div></div><div class="bloque"><h3>Durante el live</h3><div class="puntos"><div class="punto"><div class="q">Galáctico</div><div class="v">10 ⭐</div></div><div class="punto"><div class="q">Meteoritos</div><div class="v">10 ⭐</div></div><div class="punto"><div class="q">TOP Taps 🥇</div><div class="v">10 ⭐</div></div><div class="punto"><div class="q">TOP Taps 🥈</div><div class="v">5 ⭐</div></div><div class="punto"><div class="q">TOP Taps 🥉</div><div class="v">2 ⭐</div></div><div class="punto"><div class="q">Juegos interactivos</div><div class="v">2 ⭐</div></div><div class="punto"><div class="q">Eventos</div><div class="v">Según el evento</div></div></div></div><div class="bloque ancho"><h3>TOP Espectadores Mensual</h3><p class="nota">Del 1.º al 10.º, una estrellita menos por puesto.</p><div class="escalera"><div class="peldano oro"><div class="p">1.º</div><div class="e">50</div></div><div class="peldano"><div class="p">2.º</div><div class="e">49</div></div><div class="peldano"><div class="p">3.º</div><div class="e">48</div></div><div class="peldano"><div class="p">4.º</div><div class="e">47</div></div><div class="peldano"><div class="p">5.º</div><div class="e">46</div></div><div class="peldano"><div class="p">6.º</div><div class="e">45</div></div><div class="peldano"><div class="p">7.º</div><div class="e">44</div></div><div class="peldano"><div class="p">8.º</div><div class="e">43</div></div><div class="peldano"><div class="p">9.º</div><div class="e">42</div></div><div class="peldano"><div class="p">10.º</div><div class="e">41</div></div></div></div><div class="bloque"><h3>Galería de Regalos 🎁</h3><p class="nota">Según las monedas del regalo enviado en el live.</p><div class="puntos"><div class="punto"><div class="q">1 – 9 monedas</div><div class="v">1 ⭐</div></div><div class="punto"><div class="q">10 – 49</div><div class="v">2 ⭐</div></div><div class="punto"><div class="q">50 – 99</div><div class="v">3 ⭐</div></div><div class="punto"><div class="q">100 – 199</div><div class="v">5 ⭐</div></div><div class="punto"><div class="q">200 – 499</div><div class="v">10 ⭐</div></div><div class="punto"><div class="q">500 – 999</div><div class="v">20 ⭐</div></div><div class="punto"><div class="q">1.000 – 1.999</div><div class="v">35 ⭐</div></div><div class="punto"><div class="q">2.000 – 4.999</div><div class="v">60 ⭐</div></div><div class="punto"><div class="q">5.000 – 9.999</div><div class="v">100 ⭐</div></div><div class="punto"><div class="q">+10.000</div><div class="v">200 ⭐</div></div></div></div><div class="bloque"><h3>Qué gana quien queda primero</h3><div class="premios"><div class="premio"><b>Eliges juego</b><span>El ganador elige a qué jugamos en el live, y no me puedo negar. Con una condición: que respete las normas de TikTok.</span></div><div class="premio"><b>Salón de Estrellas</b><span>Tu nombre queda registrado. Si ganas varias veces, se van acumulando.</span></div><div class="premio"><b>Rango Super Estrella</b><span>Rango exclusivo en el servidor de Discord.</span></div></div></div></div>
+  </section>
 
   <footer id="pie"></footer>
 </main>
 
-<script type="application/json" id="datos">{"generado":"2026-08-12T23:04:08.394Z","mesActivo":"2026-08","meses":[{"clave":"2026-08","etiqueta":"Agosto 2026","lives":[{"id":"1533180066018754740","titulo":"REPARTO DE ESTRELLITAS | LIVE 01/08","fecha":"2026-08-01","entradas":37,"total":110},{"id":"1533900853302263869","titulo":"REPARTO DE ESTRELLITAS AGOSTO | LIVE 03/08","fecha":"2026-08-03","entradas":5,"total":18},{"id":"1534296772493578371","titulo":"ESTRELLITAS AGOSTO | LIVE 04/08","fecha":"2026-08-04","entradas":5,"total":18},{"id":"1534661304030334976","titulo":"ESTRELLITAS AGOSTO | LIVE 05/08","fecha":"2026-08-05","entradas":5,"total":18},{"id":"1535022321763352727","titulo":"ESTRELLITAS AGOSTO | LIVE 06/08","fecha":"2026-08-06","entradas":5,"total":18},{"id":"1535386191007060059","titulo":"ESTRELLITAS AGOSTO | LIVE 07/08","fecha":"2026-08-07","entradas":5,"total":18},{"id":"1536105653091958877","titulo":"ESTRELLITAS AGOSTO | LIVE 09/08","fecha":"2026-08-09","entradas":5,"total":18},{"id":"1536136048323854456","titulo":"Semana 1 | Agosto - Galería de Regalos","fecha":"2026-08-09","entradas":13,"total":99},{"id":"1536480544701943818","titulo":"ESTRELLITAS AGOSTO | LIVE 10/08","fecha":"2026-08-10","entradas":6,"total":19},{"id":"1536784538586452011","titulo":"ESTRELLITAS AGOSTO | LIVE 11/08","fecha":"2026-08-11","entradas":12,"total":25},{"id":"1537205722079825920","titulo":"ESTRELLITAS AGOSTO | LIVE 12/08","fecha":"2026-08-12","entradas":9,"total":50}],"secciones":{"Carrera de canicas":90,"Top de taps":80,"Galáctico":50,"Meteoritos":50,"Sombrero y bigote":33,"Boosteo del servidor de discord con nitro":30,"Rosquilla":27,"Galaxia":20,"Corazón Coreano":7,"Rosa":6,"Rosa grande":6,"Comentarios video TikTok":5,"Juegos":4,"Chomp":3},"totalEstrellitas":411,"ranking":[{"nombre":"Sabiii🐙✨","clave":"sabiii","total":93,"apariciones":17,"lives":7,"porSeccion":{"Boosteo del servidor de discord con nitro":30,"Carrera de canicas":27,"Galáctico":20,"Rosquilla":9,"Meteoritos":5,"Top de taps":2},"premios":[],"variantes":["Sabiii🐙✨"],"puesto":1},{"nombre":"XimeCB","clave":"ximecb","total":69,"apariciones":17,"lives":8,"porSeccion":{"Meteoritos":25,"Sombrero y bigote":11,"Galáctico":10,"Rosquilla":8,"Top de taps":6,"Rosa grande":6,"Rosa":2,"Comentarios video TikTok":1},"premios":[],"variantes":["XimeCB"],"puesto":2},{"nombre":"ZyralX","clave":"zyralx","total":50,"apariciones":12,"lives":10,"porSeccion":{"Top de taps":36,"Sombrero y bigote":10,"Carrera de canicas":3,"Comentarios video TikTok":1},"premios":[],"variantes":["ZyralX"],"puesto":3},{"nombre":"Mandarina 🍊","clave":"mandarina","total":34,"apariciones":6,"lives":4,"porSeccion":{"Sombrero y bigote":12,"Rosquilla":10,"Meteoritos":5,"Top de taps":4,"Rosa":3},"premios":[],"variantes":["Mandarina 🍊"],"puesto":4},{"nombre":"stefany","clave":"stefany","total":29,"apariciones":6,"lives":1,"porSeccion":{"Carrera de canicas":29},"premios":[],"variantes":["stefany"],"puesto":5},{"nombre":"SPR1NTX","clave":"spr1ntx","total":20,"apariciones":1,"lives":1,"porSeccion":{"Galaxia":20},"premios":[],"variantes":["SPR1NTX"],"puesto":6},{"nombre":"MarCePineda","clave":"marcepineda","total":16,"apariciones":6,"lives":3,"porSeccion":{"Carrera de canicas":11,"Corazón Coreano":4,"Comentarios video TikTok":1},"premios":[],"variantes":["MarCePineda"],"puesto":7},{"nombre":"Marlon","clave":"marlon","total":11,"apariciones":3,"lives":3,"porSeccion":{"Galáctico":10,"Rosa":1},"premios":[],"variantes":["Marlon"],"puesto":8},{"nombre":"esmeralda","clave":"esmeralda","total":11,"apariciones":3,"lives":1,"porSeccion":{"Carrera de canicas":11},"premios":[],"variantes":["esmeralda"],"puesto":8},{"nombre":"Mittens","clave":"mittens","total":10,"apariciones":8,"lives":5,"porSeccion":{"Top de taps":6,"Chomp":2,"Carrera de canicas":2},"premios":[{"seccion":"Sorteo tarjeta 10 €","live":"ESTRELLITAS AGOSTO | LIVE 12/08"}],"variantes":["Mittens"],"puesto":10},{"nombre":"Mily_quituli13","clave":"mily_quituli13","total":9,"apariciones":5,"lives":3,"porSeccion":{"Carrera de canicas":5,"Corazón Coreano":3,"Top de taps":1},"premios":[],"variantes":["Mily_quituli13"],"puesto":11},{"nombre":"AgusDaSa","clave":"agusdasa","total":7,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":7},"premios":[],"variantes":["AgusDaSa"],"puesto":12},{"nombre":"Garcikha","clave":"garcikha","total":7,"apariciones":3,"lives":2,"porSeccion":{"Meteoritos":5,"Carrera de canicas":2},"premios":[],"variantes":["Garcikha"],"puesto":12},{"nombre":"lali","clave":"lali","total":6,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["lali"],"puesto":14},{"nombre":"•Luna_Natzuki•","clave":"luna_natzuki","total":6,"apariciones":2,"lives":1,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["•Luna_Natzuki•"],"puesto":14},{"nombre":"🐯 Samuel de pirata 🐯","clave":"samueldepirata","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["🐯 Samuel de pirata 🐯"],"puesto":16},{"nombre":"Dine3411","clave":"dine3411","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["Dine3411"],"puesto":16},{"nombre":"joni1820","clave":"joni1820","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["joni1820"],"puesto":16},{"nombre":"rachel","clave":"rachel","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["rachel"],"puesto":16},{"nombre":"Kimmalu","clave":"kimmalu","total":2,"apariciones":2,"lives":2,"porSeccion":{"Chomp":1,"Comentarios video TikTok":1},"premios":[],"variantes":["Kimmalu"],"puesto":20},{"nombre":"Gissel","clave":"gissel","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["Gissel"],"puesto":20},{"nombre":"monikamonik","clave":"monikamonik","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["monikamonik"],"puesto":20},{"nombre":"PlatAB","clave":"platab","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["PlatAB"],"puesto":20},{"nombre":"[SPAIN]MikeAlfaEco","clave":"spainmikealfaeco","total":1,"apariciones":1,"lives":1,"porSeccion":{"Comentarios video TikTok":1},"premios":[],"variantes":["[SPAIN]MikeAlfaEco"],"puesto":24},{"nombre":"mafe","clave":"mafe","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["mafe"],"puesto":24},{"nombre":"MAO","clave":"mao","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["MAO"],"puesto":24},{"nombre":"Rosi Limón","clave":"rosilimón","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["Rosi Limón"],"puesto":24},{"nombre":"sevigame","clave":"sevigame","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["sevigame"],"puesto":24}]}]}</script>
+<script type="application/json" id="datos">{"generado":"2026-08-13T08:45:55.100Z","mesActivo":"2026-08","meses":[{"clave":"2026-08","etiqueta":"Agosto 2026","lives":[{"id":"1533180066018754740","titulo":"REPARTO DE ESTRELLITAS | LIVE 01/08","fecha":"2026-08-01","entradas":37,"total":110},{"id":"1533900853302263869","titulo":"REPARTO DE ESTRELLITAS AGOSTO | LIVE 03/08","fecha":"2026-08-03","entradas":5,"total":18},{"id":"1534296772493578371","titulo":"ESTRELLITAS AGOSTO | LIVE 04/08","fecha":"2026-08-04","entradas":5,"total":18},{"id":"1534661304030334976","titulo":"ESTRELLITAS AGOSTO | LIVE 05/08","fecha":"2026-08-05","entradas":5,"total":18},{"id":"1535022321763352727","titulo":"ESTRELLITAS AGOSTO | LIVE 06/08","fecha":"2026-08-06","entradas":5,"total":18},{"id":"1535386191007060059","titulo":"ESTRELLITAS AGOSTO | LIVE 07/08","fecha":"2026-08-07","entradas":5,"total":18},{"id":"1536105653091958877","titulo":"ESTRELLITAS AGOSTO | LIVE 09/08","fecha":"2026-08-09","entradas":5,"total":18},{"id":"1536136048323854456","titulo":"Semana 1 | Agosto - Galería de Regalos","fecha":"2026-08-09","entradas":13,"total":99},{"id":"1536480544701943818","titulo":"ESTRELLITAS AGOSTO | LIVE 10/08","fecha":"2026-08-10","entradas":6,"total":19},{"id":"1536784538586452011","titulo":"ESTRELLITAS AGOSTO | LIVE 11/08","fecha":"2026-08-11","entradas":12,"total":25},{"id":"1537205722079825920","titulo":"ESTRELLITAS AGOSTO | LIVE 12/08","fecha":"2026-08-12","entradas":9,"total":50}],"secciones":{"Carrera de canicas":90,"Top de taps":80,"Galáctico":50,"Meteoritos":50,"Sombrero y bigote":33,"Boosteo del servidor de discord con nitro":30,"Rosquilla":27,"Galaxia":20,"Corazón Coreano":7,"Rosa":6,"Rosa grande":6,"Comentarios video TikTok":5,"Juegos":4,"Chomp":3},"totalEstrellitas":411,"ranking":[{"nombre":"Sabiii🐙✨","clave":"sabiii","total":93,"apariciones":17,"lives":7,"porSeccion":{"Boosteo del servidor de discord con nitro":30,"Carrera de canicas":27,"Galáctico":20,"Rosquilla":9,"Meteoritos":5,"Top de taps":2},"premios":[],"variantes":["Sabiii🐙✨"],"puesto":1},{"nombre":"XimeCB","clave":"ximecb","total":69,"apariciones":17,"lives":8,"porSeccion":{"Meteoritos":25,"Sombrero y bigote":11,"Galáctico":10,"Rosquilla":8,"Top de taps":6,"Rosa grande":6,"Rosa":2,"Comentarios video TikTok":1},"premios":[],"variantes":["XimeCB"],"puesto":2},{"nombre":"ZyralX","clave":"zyralx","total":50,"apariciones":12,"lives":10,"porSeccion":{"Top de taps":36,"Sombrero y bigote":10,"Carrera de canicas":3,"Comentarios video TikTok":1},"premios":[],"variantes":["ZyralX"],"puesto":3},{"nombre":"Mandarina 🍊","clave":"mandarina","total":34,"apariciones":6,"lives":4,"porSeccion":{"Sombrero y bigote":12,"Rosquilla":10,"Meteoritos":5,"Top de taps":4,"Rosa":3},"premios":[],"variantes":["Mandarina 🍊"],"puesto":4},{"nombre":"stefany","clave":"stefany","total":29,"apariciones":6,"lives":1,"porSeccion":{"Carrera de canicas":29},"premios":[],"variantes":["stefany"],"puesto":5},{"nombre":"SPR1NTX","clave":"spr1ntx","total":20,"apariciones":1,"lives":1,"porSeccion":{"Galaxia":20},"premios":[],"variantes":["SPR1NTX"],"puesto":6},{"nombre":"MarCePineda","clave":"marcepineda","total":16,"apariciones":6,"lives":3,"porSeccion":{"Carrera de canicas":11,"Corazón Coreano":4,"Comentarios video TikTok":1},"premios":[],"variantes":["MarCePineda"],"puesto":7},{"nombre":"Marlon","clave":"marlon","total":11,"apariciones":3,"lives":3,"porSeccion":{"Galáctico":10,"Rosa":1},"premios":[],"variantes":["Marlon"],"puesto":8},{"nombre":"esmeralda","clave":"esmeralda","total":11,"apariciones":3,"lives":1,"porSeccion":{"Carrera de canicas":11},"premios":[],"variantes":["esmeralda"],"puesto":8},{"nombre":"Mittens","clave":"mittens","total":10,"apariciones":8,"lives":5,"porSeccion":{"Top de taps":6,"Chomp":2,"Carrera de canicas":2},"premios":[{"seccion":"Sorteo tarjeta 10 €","live":"ESTRELLITAS AGOSTO | LIVE 12/08"}],"variantes":["Mittens"],"puesto":10},{"nombre":"Mily_quituli13","clave":"mily_quituli13","total":9,"apariciones":5,"lives":3,"porSeccion":{"Carrera de canicas":5,"Corazón Coreano":3,"Top de taps":1},"premios":[],"variantes":["Mily_quituli13"],"puesto":11},{"nombre":"AgusDaSa","clave":"agusdasa","total":7,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":7},"premios":[],"variantes":["AgusDaSa"],"puesto":12},{"nombre":"Garcikha","clave":"garcikha","total":7,"apariciones":3,"lives":2,"porSeccion":{"Meteoritos":5,"Carrera de canicas":2},"premios":[],"variantes":["Garcikha"],"puesto":12},{"nombre":"lali","clave":"lali","total":6,"apariciones":2,"lives":2,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["lali"],"puesto":14},{"nombre":"•Luna_Natzuki•","clave":"luna_natzuki","total":6,"apariciones":2,"lives":1,"porSeccion":{"Top de taps":5,"Juegos":1},"premios":[],"variantes":["•Luna_Natzuki•"],"puesto":14},{"nombre":"🐯 Samuel de pirata 🐯","clave":"samueldepirata","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["🐯 Samuel de pirata 🐯"],"puesto":16},{"nombre":"Dine3411","clave":"dine3411","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["Dine3411"],"puesto":16},{"nombre":"joni1820","clave":"joni1820","total":5,"apariciones":1,"lives":1,"porSeccion":{"Galáctico":5},"premios":[],"variantes":["joni1820"],"puesto":16},{"nombre":"rachel","clave":"rachel","total":5,"apariciones":1,"lives":1,"porSeccion":{"Meteoritos":5},"premios":[],"variantes":["rachel"],"puesto":16},{"nombre":"Kimmalu","clave":"kimmalu","total":2,"apariciones":2,"lives":2,"porSeccion":{"Chomp":1,"Comentarios video TikTok":1},"premios":[],"variantes":["Kimmalu"],"puesto":20},{"nombre":"Gissel","clave":"gissel","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["Gissel"],"puesto":20},{"nombre":"monikamonik","clave":"monikamonik","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["monikamonik"],"puesto":20},{"nombre":"PlatAB","clave":"platab","total":2,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":2},"premios":[],"variantes":["PlatAB"],"puesto":20},{"nombre":"[SPAIN]MikeAlfaEco","clave":"spainmikealfaeco","total":1,"apariciones":1,"lives":1,"porSeccion":{"Comentarios video TikTok":1},"premios":[],"variantes":["[SPAIN]MikeAlfaEco"],"puesto":24},{"nombre":"mafe","clave":"mafe","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["mafe"],"puesto":24},{"nombre":"MAO","clave":"mao","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["MAO"],"puesto":24},{"nombre":"Rosi Limón","clave":"rosilimón","total":1,"apariciones":1,"lives":1,"porSeccion":{"Top de taps":1},"premios":[],"variantes":["Rosi Limón"],"puesto":24},{"nombre":"sevigame","clave":"sevigame","total":1,"apariciones":1,"lives":1,"porSeccion":{"Juegos":1},"premios":[],"variantes":["sevigame"],"puesto":24}]}]}</script>
 <script>
 (function(){
   const D = JSON.parse(document.getElementById('datos').textContent);
@@ -166,6 +244,19 @@
 
   let M = D.meses.find(m => m.clave === D.mesActivo) || D.meses[0] || null;
   let max = 1;
+
+  // Pestañas. El subtitulo lleva el mes, que solo tiene sentido en el ranking.
+  document.querySelector('.nav').addEventListener('click', e => {
+    const b = e.target.closest('.tab');
+    if (!b) return;
+    const enRanking = b.dataset.vista === 'ranking';
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('activo', x === b));
+    document.getElementById('vista-ranking').hidden = !enRanking;
+    document.getElementById('vista-puntos').hidden = enRanking;
+    document.getElementById('sub').textContent =
+      enRanking && M ? (SUB ? SUB + ' · ' + M.etiqueta : M.etiqueta) : SUB;
+    scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   document.getElementById('meses').innerHTML = D.meses
     .map(m => '<button class="mes'+(m.clave===D.mesActivo?' activo':'')+'" data-mes="'+m.clave+'">'
